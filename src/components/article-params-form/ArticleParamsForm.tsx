@@ -24,21 +24,23 @@ export const ArticleParamsForm = ({
 }: {
 	setState: React.Dispatch<React.SetStateAction<ArticleStateType>>;
 }) => {
-	const [isOpen, setIsOpen] = useState(false);
+	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [settings, setSettings] =
 		useState<ArticleStateType>(defaultArticleState);
 	const asideRef = useRef<HTMLElement | null>(null);
 
 	// открыть-закрыть
 	const handleOpen = () => {
-		setIsOpen(!isOpen);
+		setIsMenuOpen(!isMenuOpen);
 	};
 
 	// Закртыие по клику вне стрелки и формы
 	useEffect(() => {
+		if (!isMenuOpen) return;
+
 		const closeAside = (e: MouseEvent) => {
 			if (asideRef.current && !asideRef.current.contains(e.target as Node)) {
-				setIsOpen(false);
+				setIsMenuOpen(false);
 			}
 		};
 
@@ -47,7 +49,7 @@ export const ArticleParamsForm = ({
 		return () => {
 			document.removeEventListener('mousedown', closeAside);
 		};
-	}, []);
+	}, [isMenuOpen]);
 
 	// Очистка
 	const handleClear = () => {
@@ -62,11 +64,11 @@ export const ArticleParamsForm = ({
 
 	return (
 		<>
-			<ArrowButton isOpen={isOpen} onClick={handleOpen} />
-			{isOpen && (
+			<ArrowButton isOpen={isMenuOpen} onClick={handleOpen} />
+			{isMenuOpen && (
 				<aside
 					className={clsx(styles.container, {
-						[styles.container_open]: isOpen,
+						[styles.container_open]: isMenuOpen,
 					})}
 					ref={asideRef}>
 					<form className={styles.form} onSubmit={handleApply}>
